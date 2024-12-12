@@ -2,11 +2,12 @@ from typing import Hashable, Tuple
 
 from manim import *
 from manim.mobject.text.text_mobject import remove_invisible_chars
+from networkx.algorithms.bipartite.basic import color
 
 
 class BinarySearchTreeTraversal(Scene):
     highlights = None
-    point = None
+    arrow = None
 
     def construct(self):
         # TODO: Change these vertices & edges into actual binary tree
@@ -55,52 +56,219 @@ class BinarySearchTreeTraversal(Scene):
         self.highlights = self.getHighlighters(codeGroup)
         self.add(self.highlights)
 
-        self.point = Arrow(
+        self.arrow = Arrow(
             start = (1, 2, 0),
             end = g1.vertices['L'].get_left(),
+            color = YELLOW,
         )
 
         # Traverse from L (first) node
-        self.moveHighlight(0, 0)
+        self.play(
+            *self.moveHighlight(0, 0),
+            Write(self.arrow)
+        )
+        self.wait()
+        self.moveHighlightAndPlay(0, 1)
+        self.moveHighlightAndPlay(1, 4)
         self.wait()
 
+        # L -> C
         self.play(
-            Write(self.point)
-        )
-
-        self.moveHighlight(0, 1)
-        self.moveHighlight(1, 4)
-        self.moveHighlight(4, 0)
-        self.play(
-            self.point.animate.put_start_and_end_on(
+            *self.moveHighlight(4, 0),
+            self.arrow.animate.put_start_and_end_on(
                 start = (1, 2, 0),
                 end = g1.vertices['C'].get_left(),
             )
         )
         self.wait()
+        self.moveHighlightAndPlay(0, 1)
+        self.moveHighlightAndPlay(1, 4)
+        self.wait()
 
-        self.moveHighlight(0, 1)
-        self.moveHighlight(1, 4)
-        self.moveHighlight(4, 0)
+        # C -> T1
         self.play(
-            self.point.animate.put_start_and_end_on(
+            *self.moveHighlight(4, 0),
+            self.arrow.animate.put_start_and_end_on(
                 start = (0, 0, 0),
                 end = g1.vertices['T1'].get_left(),
             )
         )
         self.wait()
+        self.moveHighlightAndPlay(0, 1)
+        self.moveHighlightAndPlay(1, 2)
+        self.wait()
 
-        self.moveHighlight(0, 1)
-        self.moveHighlight(1, 2)
+        # T1 -> C
         self.play(
-            self.point.animate.put_start_and_end_on(
+            *self.moveHighlight(2, 5),
+            self.arrow.animate.put_start_and_end_on(
                 start = (1, 2, 0),
                 end = g1.vertices['C'].get_left(),
+            ),
+        )
+        self.wait()
+        # Print C
+        self.moveHighlightAndPlay(5, 6)
+        self.wait()
+
+        # C -> D
+        self.play(
+            *self.moveHighlight(6, 0),
+            self.arrow.animate.put_start_and_end_on(
+                start = (1, -1, 0),
+                end = g1.vertices['D'].get_left(),
+            ),
+        )
+        self.wait()
+        self.moveHighlightAndPlay(0, 1)
+        self.moveHighlightAndPlay(1, 4)
+        self.wait()
+
+        # D -> T2
+        self.play(
+            *self.moveHighlight(4, 0),
+            self.arrow.animate.put_start_and_end_on(
+                start = (1, -2, 0),
+                end = g1.vertices['T2'].get_left(),
             )
         )
-        self.moveHighlight(2, 5)
-        # print C
-        self.moveHighlight(5, 6)
+        self.wait()
+        self.moveHighlightAndPlay(0, 1)
+        self.moveHighlightAndPlay(1, 2)
+        self.wait()
+
+        # T2 -> D
+        self.play(
+            *self.moveHighlight(2, 5),
+            self.arrow.animate.put_start_and_end_on(
+                start = (1, -1, 0),
+                end = g1.vertices['D'].get_left(),
+            ),
+        )
+        self.wait()
+        # Print D
+        self.moveHighlightAndPlay(5, 6)
+        self.wait()
+
+        # D -> T3
+        self.play(
+            *self.moveHighlight(6, 0),
+            self.arrow.animate.put_start_and_end_on(
+                start = (1, -2, 0),
+                end = g1.vertices['T3'].get_left(),
+            ),
+        )
+        self.wait()
+        self.moveHighlightAndPlay(0, 1)
+        self.moveHighlightAndPlay(1, 2)
+        self.wait()
+
+        # T3 -> D
+        self.play(
+            *self.moveHighlight(2, 8),
+            self.arrow.animate.put_start_and_end_on(
+                start = (1, -1, 0),
+                end = g1.vertices['D'].get_left(),
+            ),
+        )
+        self.wait()
+
+        # D -> C
+        self.play(
+            *self.moveHighlight(8, 8),
+            self.arrow.animate.put_start_and_end_on(
+                start = (1, 2, 0),
+                end = g1.vertices['C'].get_left(),
+            ),
+        )
+        self.wait()
+
+        # C -> L
+        self.play(
+            *self.moveHighlight(8, 5),
+            self.arrow.animate.put_start_and_end_on(
+                start = (1, 2, 0),
+                end = g1.vertices['L'].get_left(),
+            ),
+        )
+        self.wait()
+        # Print L
+        self.moveHighlightAndPlay(5, 6)
+        self.wait()
+
+        # L -> P
+        self.play(
+            *self.moveHighlight(6, 0),
+            self.arrow.animate.put_start_and_end_on(
+                start = (3, 2, 0),
+                end = g1.vertices['P'].get_left(),
+            ),
+        )
+        self.wait()
+        self.moveHighlightAndPlay(0, 1)
+        self.moveHighlightAndPlay(1, 4)
+        self.wait()
+
+        # P -> T4
+        self.play(
+            *self.moveHighlight(4, 0),
+            self.arrow.animate.put_start_and_end_on(
+                start = (3, 0, 0),
+                end = g1.vertices['T4'].get_left(),
+            ),
+        )
+        self.wait()
+        self.moveHighlightAndPlay(0, 1)
+        self.moveHighlightAndPlay(1, 2)
+        self.wait()
+
+        # T4 -> P
+        self.play(
+            *self.moveHighlight(2, 5),
+            self.arrow.animate.put_start_and_end_on(
+                start = (3, 2, 0),
+                end = g1.vertices['P'].get_left(),
+            ),
+        )
+        self.wait()
+        # Print P
+        self.moveHighlightAndPlay(5, 6)
+        self.wait()
+
+        # P -> T5
+        self.play(
+            *self.moveHighlight(6, 0),
+            self.arrow.animate.put_start_and_end_on(
+                start = (3, 0, 0),
+                end = g1.vertices['T5'].get_left(),
+            ),
+        )
+        self.wait()
+        self.moveHighlightAndPlay(0, 1)
+        self.moveHighlightAndPlay(1, 2)
+        self.wait()
+
+        # T5 -> P
+        self.play(
+            *self.moveHighlight(2, 8),
+            self.arrow.animate.put_start_and_end_on(
+                start = (3, 2, 0),
+                end = g1.vertices['P'].get_left(),
+            ),
+        )
+        self.wait()
+
+        # P -> L
+        self.play(
+            *self.moveHighlight(8, 8),
+            self.arrow.animate.put_start_and_end_on(
+                start = (1, 2, 0),
+                end = g1.vertices['L'].get_left(),
+            ),
+        )
+        self.wait()
+
+        self.play(Unwrite(self.arrow))
         self.wait()
 
     def getGraph(self, vertices: List[Hashable], edges: List[Tuple[Hashable, Hashable]]):
@@ -124,6 +292,8 @@ def printInorder(node):
     printInorder(node.left)
     print(node.value)
     printInorder(node.right)
+    
+    return
         '''
 
         return Code(
@@ -149,6 +319,12 @@ def printInorder(node):
 
         return highlighters
 
-    def moveHighlight(self, prevLine: int, line: int) -> None:
+    def moveHighlight(self, prevLine: int, line: int) -> List:
+        return [
+            self.highlights[prevLine].animate.set_opacity(0),
+            self.highlights[line].animate.set_opacity(0.3),
+        ]
+
+    def moveHighlightAndPlay(self, prevLine: int, line: int) -> None:
         self.play(self.highlights[prevLine].animate.set_opacity(0))
         self.play(self.highlights[line].animate.set_opacity(0.3))
