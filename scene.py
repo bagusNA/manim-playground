@@ -2,12 +2,12 @@ from typing import Hashable, Tuple
 
 from manim import *
 from manim.mobject.text.text_mobject import remove_invisible_chars
-from networkx.algorithms.bipartite.basic import color
 
 
 class BinarySearchTreeTraversal(Scene):
     highlights = None
     arrow = None
+    resultText = []
 
     def construct(self):
         # TODO: Change these vertices & edges into actual binary tree
@@ -37,8 +37,6 @@ class BinarySearchTreeTraversal(Scene):
             g1.add_edges(edge)
 
         g1.change_layout('tree', root_vertex="L")
-
-        # g1['D'].shift(RIGHT)
 
         title = Text("Binary Search Tree - In Order Traversal")
 
@@ -107,6 +105,7 @@ class BinarySearchTreeTraversal(Scene):
             ),
         )
         self.wait()
+        self.printNode("C")
         # Print C
         self.moveHighlightAndPlay(5, 6)
         self.wait()
@@ -146,6 +145,7 @@ class BinarySearchTreeTraversal(Scene):
             ),
         )
         self.wait()
+        self.printNode("D")
         # Print D
         self.moveHighlightAndPlay(5, 6)
         self.wait()
@@ -192,6 +192,7 @@ class BinarySearchTreeTraversal(Scene):
             ),
         )
         self.wait()
+        self.printNode("L")
         # Print L
         self.moveHighlightAndPlay(5, 6)
         self.wait()
@@ -231,6 +232,7 @@ class BinarySearchTreeTraversal(Scene):
             ),
         )
         self.wait()
+        self.printNode("P")
         # Print P
         self.moveHighlightAndPlay(5, 6)
         self.wait()
@@ -326,5 +328,24 @@ def printInorder(node):
         ]
 
     def moveHighlightAndPlay(self, prevLine: int, line: int) -> None:
-        self.play(self.highlights[prevLine].animate.set_opacity(0))
-        self.play(self.highlights[line].animate.set_opacity(0.3))
+        self.play(
+            self.highlights[prevLine].animate.set_opacity(0)
+        )
+        self.play(
+            self.highlights[line].animate.set_opacity(0.3)
+        )
+
+    def printNode(self, value: str) -> None:
+        text = Text(value)
+
+        try:
+            lastText = self.resultText[-1]
+            text = text.next_to(lastText, RIGHT)
+        except IndexError as e:
+            text = text.to_corner(DL)
+
+        self.resultText.append(text)
+
+        self.play(
+            Write(text)
+        )
