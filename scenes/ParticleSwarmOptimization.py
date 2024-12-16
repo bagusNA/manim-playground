@@ -7,9 +7,9 @@ VELOCITY_BOUNDS: Tuple[float, float] = (0, 1) # R_1 & R_2
 INERTIA: float = 1                      # w
 
 # Hyperparameters
-SWARM_POPULATION: int = 10
-MAX_ITERATIONS: int = 3                 # n
-BOUNDS: Tuple[int, int] = (0, 5)
+SWARM_POPULATION: int = 100
+MAX_ITERATIONS: int = 10                 # n
+BOUNDS: Tuple[float, float] = (0, 5)
 COGNITIVE_COEFFICIENT: float = 0.5      # C_1
 SOCIAL_COEFFICIENT: float = 0.5         # C_2
 
@@ -60,6 +60,8 @@ def main() -> None:
             )
 
             particle.pos += particle.velocity
+            particle.pos = max(BOUNDS[0], min(particle.pos, BOUNDS[1])) # Make sure particle stays inside given boundaries
+
             particle.fitness_value = fitness_function(particle.pos)
 
             if particle.fitness_value < fitness_function(particle.best_pos):
