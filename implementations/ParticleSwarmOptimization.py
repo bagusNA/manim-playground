@@ -130,7 +130,7 @@ if __name__ == '__main__':
 
     fig.suptitle("Perkembangan Partikel Selama Iterasi")
 
-    # plt.show()
+    plt.show()
 
     # with tempconfig({ 'output_file': 'a.png' }):
     #     pos_plot = PSOPosPlot(pso, MAX_ITERATIONS, BOUNDS)

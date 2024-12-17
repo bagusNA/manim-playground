@@ -2,6 +2,9 @@ import math
 import random
 from typing import Tuple, List
 
+import matplotlib.pyplot as plt
+import numpy as np
+
 # Constants
 VELOCITY_BOUNDS: Tuple[float, float] = (0, 1) # R_1 & R_2
 INERTIA: float = 1                      # w
@@ -15,7 +18,7 @@ COGNITIVE_COEFFICIENT: float = 1      # C_1
 SOCIAL_COEFFICIENT: float = 0.5         # C_2
 
 def fitness_function(x: float, y: float) -> float:
-    return math.cos(2 * x + y) + math.pow(x - y, 2) - 5 * x + 3 * y + 2
+    return np.cos(2 * x + y) + np.pow(x - y, 2) - 5 * x + 3 * y + 2
 
 # Implementation
 class Particle:
@@ -112,3 +115,26 @@ class PSO:
 if __name__ == "__main__":
     pso = PSO()
     pso.run()
+
+    # Contour
+    x = np.linspace(*BOUNDS, 50)
+    y = np.linspace(*BOUNDS, 50)
+    X, Y = np.meshgrid(x, y)
+    fig = plt.figure("Particle Swarm Optimization")
+
+    ax = fig.add_subplot(1, 1, 1)
+    ac = ax.contourf(X, Y, fitness_function(X, Y), cmap='viridis')
+    fig.colorbar(ac)
+
+    # Scatter
+    x_pos_history = []
+    y_pos_history = []
+
+    for particle in pso.swarm.particles:
+        for pos in particle.pos_history:
+            x_pos_history.append(pos[0])
+            y_pos_history.append(pos[1])
+
+    plt.scatter(x_pos_history, y_pos_history, c='r')
+
+    plt.show()
