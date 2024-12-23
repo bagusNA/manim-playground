@@ -65,6 +65,7 @@ class Dijkstra:
         self._traveled_vertices: List[str] = []
         self._distance: Dict[str, int] = {}
         self._path: Dict[str, List[str]] = {}
+        self._closest_vertex_previous: Dict[str, str | None] = {}
 
         # Table data
         self._table_result: List[any] = []
@@ -92,15 +93,17 @@ class Dijkstra:
         ])
 
     def _format_table_result(self, vertex: str, distance: int, current_vertex: str) -> str:
+        previous_vertex = self._closest_vertex_previous[vertex] or vertex
+
         if vertex == current_vertex and distance != sys.maxsize:
             self._printed_traveled_vertices.append(vertex)
-            return f"{ANSI_COLOR_GREEN}{distance}/{vertex}{ANSI_COLOR_END}"
+            return f"{ANSI_COLOR_GREEN}{distance}/{previous_vertex}{ANSI_COLOR_END}"
 
         if vertex in self._printed_traveled_vertices:
             return " "
 
         return (
-            "∞" if distance == sys.maxsize else f"{distance}/{vertex}"
+            "∞" if distance == sys.maxsize else f"{distance}/{previous_vertex}"
         )
 
     def _print_table(self, current_vertex) -> None:
@@ -131,11 +134,13 @@ class Dijkstra:
     def find(self, source: str, destination: str) -> None:
         """
         Isi utama implementasi algoritma dijkstra
+        :param destination:
         :param source:
         """
         self._path = {vertex: [source] for vertex in self._graph.vertices}
         self._distance = {vertex: sys.maxsize for vertex in self._graph.vertices} # Distance from source
         self._distance[source] = 0
+        self._closest_vertex_previous = {vertex: None for vertex in self._graph.vertices} # Distance from source
 
         for _ in self._graph.vertices:
             closest_vertex = self._find_closest_untraveled_vertex()
@@ -147,9 +152,10 @@ class Dijkstra:
 
                 if (distance_between > 0) and (vertex not in self._traveled_vertices) and (self._distance[vertex] > self._distance[closest_vertex] + distance_between):
                     self._distance[vertex] = self._distance[closest_vertex] + distance_between
+                    self._closest_vertex_previous[vertex] = closest_vertex
 
                     if closest_vertex != source:
-                        self._path[vertex].append(closest_vertex)
+                        self._path[vertex] = [*self._path[closest_vertex], closest_vertex]
 
             self._append_table_result(closest_vertex)
             self._print_table(closest_vertex)
